@@ -12,7 +12,7 @@ import Polysemy.Final
 -- 'reinterpret', 'raiseUnder', or any of their friends.
 runFinalSem :: Sem (Final (Sem r) ': r) a -> Sem r a
 runFinalSem = usingSem $ \u -> case decomp u of
-  Right (Weaving (WithWeavingToFinal wav) s wv ex ins) ->
+  Right (Weaving (WeavingDetails (WithWeavingToFinal wav) s wv ex ins)) ->
     ex <$> wav s (runFinalSem . wv) ins
   Left g -> liftSem (hoist runFinalSem g)
 {-# INLINE runFinalSem #-}

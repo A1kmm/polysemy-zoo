@@ -119,7 +119,7 @@ runCaptureWithC :: (a -> Sem r (Maybe s))
                 -> Sem r (Maybe s)
 runCaptureWithC c (Sem m) = (`runContT` c) $ m $ \u ->
     case decomp u of
-      Right (Weaving e s wv ex ins) ->
+      Right (Weaving (WeavingDetails e s wv ex ins)) ->
         ContT $ \c' ->
           case e of
             Reflect ref a ->

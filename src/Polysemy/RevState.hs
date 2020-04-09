@@ -129,7 +129,7 @@ runRevStateInC :: Member Fixpoint r
                -> RevStateT s (Sem r) a
 runRevStateInC = usingSem $ \u -> RevStateT $ \s ->
   case decomp u of
-    Right (Weaving (RevState f) st _ ex _) ->
+    Right (Weaving (WeavingDetails (RevState f) st _ ex _)) ->
       return $ (ex . (<$ st)) <$> f s
     Left g ->
       liftSem $
@@ -144,7 +144,7 @@ runLazyRevStateInC :: Member Fixpoint r
                    -> LazyRevStateT s (Sem r) a
 runLazyRevStateInC = usingSem $ \u -> LazyRevStateT $ \s ->
   case decomp u of
-    Right (Weaving (RevState f) st _ ex _) ->
+    Right (Weaving (WeavingDetails (RevState f) st _ ex _)) ->
       return $ (ex . (<$ st)) <$> f s
     Left g ->
       liftSem $

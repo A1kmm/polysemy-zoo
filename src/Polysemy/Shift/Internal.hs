@@ -82,7 +82,7 @@ runShiftWeaving :: Monad m
                 => (forall x. (x -> m (Maybe s)) -> Sem r x -> m (Maybe s))
                 -> Weaving (Shift (Ref m (Maybe s)) s) (Sem r) a
                 -> ContT (Maybe s) m a
-runShiftWeaving runW (Weaving e s wv ex ins) =
+runShiftWeaving runW (Weaving (WeavingDetails e s wv ex ins)) =
   fmap (ex . (<$ s)) $ ContT $ \c ->
     case e of
       Trap main ->

@@ -100,7 +100,7 @@ runFreshUnsafePerformIO :: Sem (Fresh Unique ': r) a
                         -> Sem r a
 runFreshUnsafePerformIO = usingSem $ \u ->
   case decomp u of
-    Right (Weaving Fresh s _ ex _) -> do
+    Right (Weaving (WeavingDetails Fresh s _ ex _)) -> do
       let !uniq = unsafePerformIO (newUnique' u)
           {-# NOINLINE uniq #-}
       pure $ ex (uniq <$ s)
@@ -114,5 +114,5 @@ runFreshUnsafePerformIO = usingSem $ \u ->
 {-# NOINLINE runFreshUnsafePerformIO #-}
 
 newUnique' :: Union (Fresh Unique ': r) (Sem (Fresh Unique ': r)) a -> IO Unique
-newUnique' (Union _ _) = newUnique
+newUnique' (Union _) = newUnique
 {-# NOINLINE newUnique' #-}

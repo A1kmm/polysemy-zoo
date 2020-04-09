@@ -83,7 +83,7 @@ runContWeaving :: Monad m
                => (forall x. (x -> m s) -> Sem r x -> m s)
                -> Weaving (Cont (Ref m s)) (Sem r) a
                -> ContT s m a
-runContWeaving runW (Weaving e s wv ex _) =
+runContWeaving runW (Weaving (WeavingDetails e s wv ex _)) =
     ContT $ \c ->
       case e of
         Jump ref a    -> runRef ref a
@@ -162,7 +162,7 @@ runContViaFreshInC :: forall uniq s r a
                    -> ContT s (Sem (Error (uniq, Any) ': r)) a
 runContViaFreshInC = usingSem $ \u -> ContT $ \c ->
   case decomp u of
-    Right (Weaving e s wv ex _) ->
+    Right (Weaving (WeavingDetails e s wv ex _)) ->
       case e of
         Subst main cn -> do
           ref <- fresh
@@ -205,7 +205,7 @@ runContViaFreshInCWeave :: forall uniq s r a
                             a
 runContViaFreshInCWeave = usingSem $ \u -> ContT $ \c ->
   case decomp u of
-    Right (Weaving e s wv ex _) ->
+    Right (Weaving (WeavingDetails e s wv ex _)) ->
       case e of
         Subst main cn -> do
           ref <- fresh

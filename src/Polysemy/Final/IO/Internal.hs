@@ -60,7 +60,7 @@ runViaFinalGlobal :: (Member (Final IO) r, Functor f)
                   -> Sem (e ': r) a
                   -> MaybeT IO a
 runViaFinalGlobal st wv ins f = usingSem $ \u -> case decomp u of
-  Right (Weaving e s' wv' ex ins') ->
+  Right (Weaving (WeavingDetails e s' wv' ex ins')) ->
     fmap ex $ MaybeT $ fmap getCompose $ runStrategy (f e)
           (Compose (Just s'))
           (  maybe
@@ -74,7 +74,7 @@ runViaFinalGlobal st wv ins f = usingSem $ \u -> case decomp u of
           )
           (getCompose >=> ins')
   Left g -> case prj g of
-      Just (Weaving (WithWeavingToFinal wav) s' wv' ex' ins') ->
+      Just (Weaving (WeavingDetails (WithWeavingToFinal wav) s' wv' ex' ins')) ->
         MaybeT $ fmap (fmap ex' . getCompose) $
           wav
             (Compose (Just s'))
